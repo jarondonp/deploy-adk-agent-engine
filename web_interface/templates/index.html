@@ -50,6 +50,21 @@
         .agent-message {
             background-color: #f1f1f1;
             align-self: flex-start;
+            line-height: 1.5;
+        }
+        
+        .agent-message strong {
+            font-weight: bold;
+            color: #4285f4;
+        }
+        
+        .agent-message em {
+            font-style: italic;
+            color: #0f9d58;
+        }
+        
+        .agent-message br {
+            margin-bottom: 5px;
         }
         .error-message {
             background-color: #ffebee;
@@ -234,7 +249,25 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'user' ? 'user-message' : 'agent-message');
-                messageDiv.textContent = text;
+                
+                // Procesar formato básico en la respuesta del agente
+                if (sender === 'agent') {
+                    // Convertir saltos de línea a <br>
+                    text = text.replace(/\n/g, '<br>');
+                    
+                    // Convertir **texto** a <strong>texto</strong> (negritas)
+                    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    
+                    // Convertir _texto_ a <em>texto</em> (cursiva)
+                    text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+                    
+                    // Establecer el contenido HTML en lugar de texto
+                    messageDiv.innerHTML = text;
+                } else {
+                    // Para mensajes del usuario, mantener como texto plano
+                    messageDiv.textContent = text;
+                }
+                
                 messagesContainer.appendChild(messageDiv);
                 
                 // Scroll to bottom
